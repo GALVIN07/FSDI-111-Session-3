@@ -15,7 +15,7 @@ def output_formatter(results):
 
 
 
-def insert(first_name, last_name, hobbies=None, active=1):
+def insert(first_name, last_name, hobbies= None, active=1):
     value_tuple = (first_name, last_name, hobbies, active)
     query = """
         INSERT INTO user (
@@ -40,7 +40,7 @@ def scan():
     
 def read(pk):
     cursor = get_db().execute(
-        "SELECT * FROM user WHERE id=?," (pk, )
+        "SELECT * FROM user WHERE id=?", (pk, )
     )
     results = cursor.fetchall()
     cursor.close()
@@ -63,7 +63,7 @@ def update(pk, first_name, last_name, hobbies):
 def deactivate_user(pk):
     cursor = get_db()
     cursor.execute(
-        "UPDATE user SET active=0 WHERE=?", (pk, )
+        "UPDATE user SET active=0 WHERE id=?", (pk, )
     )           
     cursor.commit()
     cursor.close()
