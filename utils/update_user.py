@@ -1,14 +1,31 @@
 import requests
+from random import choice
 
-from create_user import URL, USER_DATA
+UPDATE_USER = {
+    "first_name": "Gary",
+    "last_name" : "Galvin",
+    "hobbies": choice(
+        [
+            "Driving",
+            "Hunting",
+            "Fishing",
+            "Legos",
+            "Models",
+            "Wood Working",
+            "Fitness",
+            "Movies"
+        ]
+    )
+}
+
+URL = "http://127.0.0.1:5000/users/1"
 
 def update_user():
-    USER_DATA["hobbies"]= "Shooting"
-    out = requests.put(URL+"/1", json=USER_DATA)
+    out = requests.put(URL, json=UPDATED_USER)
     if out.status_code == 200:
-        print("Updated")
+        print("Update successful.")
     else:
-        print("Something went wrong.")
+        print("Update failed")
 
 if __name__ == "__main__":
     update_user()

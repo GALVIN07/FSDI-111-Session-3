@@ -1,4 +1,4 @@
-import requests
+
 from flask import request
 from datetime import datetime
 
@@ -16,10 +16,8 @@ def get_version():
     return out
 
 
-
-
 @app.post("/users")
-def creat_user():
+def create_user():
     user_data = request.json
     db.session.add(
         User(
@@ -37,6 +35,7 @@ def get_all_users():
     out_list = []
     for user in users:
         temp = {}
+        temp["id"] = user.id
         temp["first_name"]= user.first_name
         temp["last_name"] = user.last_name
         temp["hobbies"] = user.hobbies
@@ -51,28 +50,37 @@ def get_single_user(pk):
     return {
         "first_name": user.first_name,
         "last_name" : user.last_name,
-        "hobbies" : user.hobbies
+        "hobbies" : user.hobbies,
+        "active": user.active
     }
 
-# @app.put("/users/<int:pk>")
-# def put_single_user(pk):
-#     user_data = request.json
-#     user.update(
-#     pk,
-#     user_data.get("first_name"),
-#     user_data.get("last_name"),
-#     user_data.get("hobbies")
-#     )
-
-#     return "ok", 204
+@app.put("/users/<int:pk>")
+def update_user(pk):
+    user_data = request.json
+    user = User.query.filter_by(id=pk).first()
+    user.first_name = user_data.get("first_name", user.first_name)
+    user.last_name = user_data.get("last_name", user.last_name)
+    user.hobbies = user_data.get("hobbies", user.hobbies)
+    user.active = user_data.get("active", user.active)
+    db.session.commit()
+    return {"status": "success"}, 200
     
 
 
-# @app.delete("/users/<int:pk>")
-# def delete_single_user(pk):
-#     user.deactivate_user(pk) 
+@app.delete("/users/<int:pk>/soft")
+def deactivate_user(pk):
+    user = User.query.filter_by(id=pk).first()
+    user.active = 0
+    db.session.commit()
 
-#     return "OK", 204
+    return {"status" : "succcess"}
+
+
+@app.delete("/user/<int:pk>/permanent")
+def delete_user(pk):
+    User.query.filter_by(id=pk).delete()
+    db.session.commit()
+    return {"status": "success"}
 
 # FOR UPDATE: an HTTP PUT operation with rout: /users/<int:pk> 
 # FOR DEACTIVATE: an HTTP DELETE operation with route: /user/<int:pk>
