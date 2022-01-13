@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}About {{ user.first_name }} {% endblock title %}
+
+{% block content %}
+<h1>About {{ user.first_name }} </h1>
+<strong>Last name: {{ user.last_name }} </strong>
+<p>Hobbies: {{ user.hobbies }}</p>
+<p>Click <a href="{% url_for('get_all_users') %}">here</a> to go back to the list of all users</p>
+{% endblock content %}
